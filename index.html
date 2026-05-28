@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧠 Đố Vui IQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e17;
+    --surface: #1a1829;
+    --card: #221f35;
+    --accent: #ff6b35;
+    --accent2: #ffd166;
+    --accent3: #06d6a0;
+    --accent4: #118ab2;
+    --text: #fffffe;
+    --muted: #a7a9be;
+    --locked: #2e2b45;
+    --locked-text: #4a4762;
+    --radius: 16px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Animated starfield background ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, #1a0533 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, #001a33 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .stars {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 25%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 75%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(2px 2px at 60% 35%, rgba(255,209,102,0.5) 0%, transparent 100%),
+      radial-gradient(2px 2px at 30% 60%, rgba(6,214,160,0.4) 0%, transparent 100%);
+    animation: twinkle 4s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle { from { opacity: 0.7; } to { opacity: 1; } }
+
+  /* ── Screens ── */
+  .screen {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  .screen.active { opacity: 1; pointer-events: all; }
+
+  /* ── LOGIN ── */
+  .login-card {
+    background: var(--card);
+    border: 1px solid rgba(255,107,53,0.3);
+    border-radius: 24px;
+    padding: 48px 40px;
+    width: min(440px, 90vw);
+    box-shadow: var(--shadow), 0 0 60px rgba(255,107,53,0.1);
+    animation: floatUp 0.6s ease forwards;
+    text-align: center;
+  }
+  @keyframes floatUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  .logo {
+    font-family: 'Baloo 2', cursive;
+    font-size: 3rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px; line-height: 1;
+  }
+  .tagline { color: var(--muted); font-size: 0.95rem; margin-bottom: 36px; }
+
+  .input-group { position: relative; margin-bottom: 24px; }
+  .input-group input {
+    width: 100%;
+    padding: 16px 20px 16px 50px;
+    background: rgba(255,255,255,0.05);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem; font-weight: 600;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .input-group input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255,107,53,0.2);
+  }
+  .input-group input::placeholder { color: var(--muted); }
+  .input-icon {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    font-size: 1.3rem;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--accent), #e55a2b);
+    border: none; border-radius: var(--radius);
+    color: white; font-family: 'Baloo 2', cursive;
+    font-size: 1.15rem; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.5px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(255,107,53,0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,107,53,0.5); }
+  .btn-primary:active { transform: translateY(0); }
+
+  /* ── MENU ── */
+  #screen-menu { align-items: flex-start; overflow-y: auto; padding: 24px 16px; }
+  #screen-menu .inner { width: min(780px, 100%); margin: auto; }
+
+  .menu-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+  }
+  .welcome-text { font-family: 'Baloo 2', cursive; font-size: 1.6rem; font-weight: 800; }
+  .welcome-text span { color: var(--accent2); }
+  .logout-btn {
+    padding: 8px 18px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px; color: var(--muted);
+    font-family: 'Nunito', sans-serif; font-size: 0.9rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .logout-btn:hover { background: rgba(255,107,53,0.15); color: var(--accent); border-color: var(--accent); }
+
+  .level-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    gap: 12px;
+  }
+
+  .level-btn {
+    aspect-ratio: 1;
+    border-radius: 14px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'Baloo 2', cursive; font-weight: 800;
+    font-size: 1.1rem; cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    position: relative; overflow: hidden;
+    user-select: none;
+  }
+
+  .level-btn.unlocked {
+    background: linear-gradient(135deg, #1e4a3a, #0d2e24);
+    border-color: var(--accent3);
+    color: var(--accent3);
+    box-shadow: 0 4px 16px rgba(6,214,160,0.2);
+    animation: pulse-green 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse-green {
+    0%,100% { box-shadow: 0 4px 16px rgba(6,214,160,0.2); }
+    50%      { box-shadow: 0 4px 24px rgba(6,214,160,0.45); }
+  }
+  .level-btn.unlocked:hover { transform: scale(1.08); box-shadow: 0 8px 24px rgba(6,214,160,0.4); }
+
+  .level-btn.locked {
+    background: var(--locked);
+    border-color: rgba(255,255,255,0.05);
+    color: var(--locked-text);
+    cursor: not-allowed;
+  }
+
+  .lock-icon { font-size: 0.9rem; margin-top: 2px; }
+
+  /* toast */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: rgba(30,26,50,0.95);
+    border: 1px solid rgba(255,107,53,0.4);
+    border-radius: 12px; padding: 12px 24px;
+    color: var(--text); font-weight: 700; font-size: 0.95rem;
+    z-index: 100; white-space: nowrap;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1), opacity 0.4s;
+    opacity: 0;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  /* ── QUIZ ── */
+  .quiz-card {
+    background: var(--card);
+    border: 1px solid rgba(17,138,178,0.3);
+    border-radius: 24px;
+    padding: 40px 36px;
+    width: min(560px, 92vw);
+    box-shadow: var(--shadow), 0 0 60px rgba(17,138,178,0.08);
+    animation: floatUp 0.5s ease forwards;
+  }
+
+  .quiz-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17,138,178,0.15);
+    border: 1px solid rgba(17,138,178,0.4);
+    border-radius: 20px; padding: 6px 16px;
+    font-size: 0.85rem; font-weight: 700; color: var(--accent4);
+    margin-bottom: 20px;
+  }
+
+  .quiz-question {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.25rem; font-weight: 700;
+    line-height: 1.5; margin-bottom: 28px;
+    color: var(--text);
+  }
+
+  .choice-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+
+  .choice-btn {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius); cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700;
+    color: var(--text); text-align: left;
+    transition: all 0.25s;
+  }
+  .choice-btn:hover { background: rgba(17,138,178,0.12); border-color: var(--accent4); transform: translateX(4px); }
+
+  .choice-label {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  /* answer result */
+  .result-box {
+    display: none;
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 4px; margin-bottom: 20px;
+  }
+  .result-box.wrong {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+  }
+  .result-box.correct {
+    background: rgba(6,214,160,0.1);
+    border: 1px solid rgba(6,214,160,0.3);
+  }
+  .result-title {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.1rem; font-weight: 800; margin-bottom: 8px;
+  }
+  .result-box.wrong .result-title  { color: #f87171; }
+  .result-box.correct .result-title { color: var(--accent3); }
+
+  .result-text { font-size: 0.95rem; color: var(--muted); line-height: 1.6; }
+
+  /* diagram SVG */
+  .diagram-wrap {
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px; padding: 20px;
+    margin-top: 14px; overflow: hidden;
+  }
+  .diagram-wrap svg { width: 100%; height: auto; }
+
+  .action-btns { display: flex; gap: 12px; }
+  .btn-retry {
+    flex: 1; padding: 14px;
+    background: rgba(255,107,53,0.1);
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius); cursor: pointer;
+    color: var(--accent); font-family: 'Baloo 2', cursive;
+    font-size: 1rem; font-weight: 700;
+    transition: all 0.2s;
+  }
+  .btn-retry:hover { background: rgba(255,107,53,0.2); transform: translateY(-2px); }
+
+  .btn-menu {
+    flex: 1; padding: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius); cursor: pointer;
+    color: var(--muted); font-family: 'Baloo 2', cursive;
+    font-size: 1rem; font-weight: 700;
+    transition: all 0.2s;
+  }
+  .btn-menu:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+  /* shake animation for wrong */
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+  .shake { animation: shake 0.5s ease; }
+
+  /* confetti (tiny celebration) */
+  .confetti-piece {
+    position: fixed; width: 8px; height: 8px; border-radius: 2px;
+    animation: confettiFall 1.5s ease-in forwards;
+    pointer-events: none; z-index: 200;
+  }
+  @keyframes confettiFall {
+    0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="stars"></div>
+<div class="toast" id="toast"></div>
+
+<!-- ══ SCREEN: LOGIN ══ -->
+<div class="screen active" id="screen-login">
+  <div class="login-card">
+    <div class="logo">🧠 Đố Vui IQ</div>
+    <div class="tagline">Thử thách trí tuệ của bạn qua 50 ải!</div>
+    <div class="input-group">
+      <span class="input-icon">👤</span>
+      <input type="text" id="player-name" placeholder="Nhập tên người chơi..." maxlength="30" autocomplete="off">
+    </div>
+    <button class="btn-primary" id="btn-login">🚀 Bắt Đầu Hành Trình</button>
+  </div>
+</div>
+
+<!-- ══ SCREEN: MENU ══ -->
+<div class="screen" id="screen-menu">
+  <div class="inner">
+    <div class="menu-header">
+      <div>
+        <div class="welcome-text">Xin chào, <span id="display-name">Người chơi</span>! 👋</div>
+        <div style="color:var(--muted);font-size:0.9rem;margin-top:4px;">Chọn ải để bắt đầu thử thách</div>
+      </div>
+      <button class="logout-btn" id="btn-logout">← Đăng xuất</button>
+    </div>
+    <div class="level-grid" id="level-grid"></div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: QUIZ ══ -->
+<div class="screen" id="screen-quiz">
+  <div class="quiz-card" id="quiz-card">
+    <div class="quiz-badge">🏆 Ải số 1 &nbsp;|&nbsp; Câu hỏi suy luận</div>
+    <div class="quiz-question">
+      🏠 Nhà An cách trường <strong>5km</strong>, cách công viên <strong>10km</strong>.<br><br>
+      Hỏi từ <strong>công viên</strong> đến <strong>trường</strong> cách bao nhiêu km?
+    </div>
+
+    <div class="choice-list" id="choice-list">
+      <button class="choice-btn" id="btn-A" onclick="answer('A')">
+        <div class="choice-label">A</div>
+        <div>5 km</div>
+      </button>
+      <button class="choice-btn" id="btn-B" onclick="answer('B')">
+        <div class="choice-label">B</div>
+        <div>15 km</div>
+      </button>
+    </div>
+
+    <div class="result-box" id="result-box">
+      <div class="result-title" id="result-title"></div>
+      <div class="result-text" id="result-text"></div>
+      <div class="diagram-wrap" id="diagram-wrap"></div>
+    </div>
+
+    <div class="action-btns" id="action-btns" style="display:none;">
+      <button class="btn-retry" onclick="retryQuiz()">🔄 Thử lại</button>
+      <button class="btn-menu" onclick="goMenu()">🗺️ Menu chính</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let playerName = '';
+
+  /* ─── Helpers ─── */
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  /* ─── LOGIN ─── */
+  document.getElementById('btn-login').addEventListener('click', () => {
+    const val = document.getElementById('player-name').value.trim();
+    if (!val) { showToast('⚠️ Hãy nhập tên của bạn!'); return; }
+    playerName = val;
+    document.getElementById('display-name').textContent = playerName;
+    buildLevelGrid();
+    showScreen('screen-menu');
+  });
+  document.getElementById('player-name').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-login').click();
+  });
+
+  /* ─── LOGOUT ─── */
+  document.getElementById('btn-logout').addEventListener('click', () => {
+    document.getElementById('player-name').value = '';
+    showScreen('screen-login');
+  });
+
+  /* ─── LEVEL GRID ─── */
+  function buildLevelGrid() {
+    const grid = document.getElementById('level-grid');
+    grid.innerHTML = '';
+    for (let i = 1; i <= 50; i++) {
+      const btn = document.createElement('div');
+      btn.className = 'level-btn ' + (i === 1 ? 'unlocked' : 'locked');
+      btn.innerHTML = i === 1
+        ? `<span>${i}</span><span class="lock-icon">⭐</span>`
+        : `<span>${i}</span><span class="lock-icon">🔒</span>`;
+      btn.addEventListener('click', () => onLevelClick(i));
+      grid.appendChild(btn);
+    }
+  }
+
+  function onLevelClick(n) {
+    if (n === 1) {
+      resetQuiz();
+      showScreen('screen-quiz');
+    } else {
+      showToast(`🔒 Hãy vượt qua Ải ${n - 1} trước!`);
+    }
+  }
+
+  /* ─── QUIZ ─── */
+  function resetQuiz() {
+    document.getElementById('choice-list').style.display = 'flex';
+    document.getElementById('result-box').style.display = 'none';
+    document.getElementById('action-btns').style.display = 'none';
+    document.getElementById('result-box').className = 'result-box';
+    document.getElementById('btn-A').disabled = false;
+    document.getElementById('btn-B').disabled = false;
+    document.getElementById('btn-A').style.opacity = '1';
+    document.getElementById('btn-B').style.opacity = '1';
+    document.getElementById('diagram-wrap').innerHTML = '';
+  }
+
+  function answer(choice) {
+    const resultBox   = document.getElementById('result-box');
+    const resultTitle = document.getElementById('result-title');
+    const resultText  = document.getElementById('result-text');
+    const diagramWrap = document.getElementById('diagram-wrap');
+
+    document.getElementById('btn-A').disabled = true;
+    document.getElementById('btn-B').disabled = true;
+    document.getElementById('btn-A').style.opacity = choice === 'A' ? '1' : '0.4';
+    document.getElementById('btn-B').style.opacity = choice === 'B' ? '1' : '0.4';
+
+    resultBox.style.display = 'block';
+    resultBox.className = 'result-box wrong';
+
+    if (choice === 'A') {
+      resultTitle.textContent = '❌ Sai rồi! Đáp án đúng là B — 15 km';
+      resultText.innerHTML = '';
+      diagramWrap.innerHTML = buildDiagramB();
+    } else {
+      resultTitle.textContent = '❌ Sai rồi! Đáp án đúng là A — 5 km';
+      resultText.innerHTML = '';
+      diagramWrap.innerHTML = buildDiagramA();
+    }
+
+    document.getElementById('action-btns').style.display = 'flex';
+    const card = document.getElementById('quiz-card');
+    card.classList.add('shake');
+    setTimeout(() => card.classList.remove('shake'), 600);
+  }
+
+  /* B đúng — 15km: Công viên → Nhà An → Trường thẳng hàng, tổng = 10 + 5 = 15km */
+  function buildDiagramB() {
+    return `
+    <svg viewBox="0 0 460 130" xmlns="http://www.w3.org/2000/svg" font-family="Nunito, sans-serif">
+      <!-- Road -->
+      <rect x="30" y="58" width="400" height="6" rx="3" fill="#2a2742"/>
+      <line x1="30" y1="61" x2="430" y2="61" stroke="#3d3960" stroke-width="2" stroke-dasharray="12,8"/>
+
+      <!-- Công viên (trái) -->
+      <circle cx="55" cy="61" r="14" fill="#0d3d30" stroke="#06d6a0" stroke-width="2"/>
+      <text x="55" y="66" text-anchor="middle" fill="#06d6a0" font-size="14">🌳</text>
+      <text x="55" y="88" text-anchor="middle" fill="#06d6a0" font-size="10" font-weight="700">Công viên</text>
+
+      <!-- Nhà An (giữa) -->
+      <circle cx="248" cy="61" r="14" fill="#3d3200" stroke="#ffd166" stroke-width="2"/>
+      <text x="248" y="66" text-anchor="middle" fill="#ffd166" font-size="14">🏠</text>
+      <text x="248" y="88" text-anchor="middle" fill="#ffd166" font-size="10" font-weight="700">Nhà An</text>
+
+      <!-- Trường (phải) -->
+      <circle cx="405" cy="61" r="14" fill="#0d2233" stroke="#118ab2" stroke-width="2"/>
+      <text x="405" y="66" text-anchor="middle" fill="#118ab2" font-size="14">🏫</text>
+      <text x="405" y="88" text-anchor="middle" fill="#118ab2" font-size="10" font-weight="700">Trường</text>
+
+      <!-- mũi tên 10km -->
+      <line x1="70" y1="44" x2="233" y2="44" stroke="#06d6a0" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <polygon points="233,40 242,44 233,48" fill="#06d6a0"/>
+      <text x="151" y="38" text-anchor="middle" fill="#06d6a0" font-size="11" font-weight="700">10 km</text>
+
+      <!-- mũi tên 5km -->
+      <line x1="263" y1="44" x2="390" y2="44" stroke="#ffd166" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <polygon points="390,40 399,44 390,48" fill="#ffd166"/>
+      <text x="325" y="38" text-anchor="middle" fill="#ffd166" font-size="11" font-weight="700">5 km</text>
+
+      <!-- bracket tổng 15km -->
+      <path d="M55 100 L55 112 L405 112 L405 100" stroke="#ff6b35" stroke-width="2" fill="none" stroke-linejoin="round"/>
+      <text x="230" y="128" text-anchor="middle" fill="#ff6b35" font-size="13" font-weight="800">Công viên → Trường = 10 + 5 = 15 km</text>
+    </svg>`;
+  }
+
+  /* A đúng — 5km: Nhà An trùng vị trí Công viên (bên trái), Công viên ở giữa cách Trường 5km
+     Layout: [Nhà An/Công viên] --5km-- [Trường], Nhà An cách Công viên 0 vì cùng chỗ,
+     thực ra: Nhà An --5km-- Trường --5km-- Công viên → CV tới Trường = 5km */
+  function buildDiagramA() {
+    return `
+    <svg viewBox="0 0 460 130" xmlns="http://www.w3.org/2000/svg" font-family="Nunito, sans-serif">
+      <!-- Road -->
+      <rect x="30" y="58" width="400" height="6" rx="3" fill="#2a2742"/>
+      <line x1="30" y1="61" x2="430" y2="61" stroke="#3d3960" stroke-width="2" stroke-dasharray="12,8"/>
+
+      <!-- Nhà An (trái) -->
+      <circle cx="55" cy="61" r="14" fill="#3d3200" stroke="#ffd166" stroke-width="2"/>
+      <text x="55" y="66" text-anchor="middle" fill="#ffd166" font-size="14">🏠</text>
+      <text x="55" y="88" text-anchor="middle" fill="#ffd166" font-size="10" font-weight="700">Nhà An</text>
+
+      <!-- Công viên (giữa) -->
+      <circle cx="248" cy="61" r="14" fill="#0d3d30" stroke="#06d6a0" stroke-width="2"/>
+      <text x="248" y="66" text-anchor="middle" fill="#06d6a0" font-size="14">🌳</text>
+      <text x="248" y="88" text-anchor="middle" fill="#06d6a0" font-size="10" font-weight="700">Công viên</text>
+
+      <!-- Trường (phải) -->
+      <circle cx="405" cy="61" r="14" fill="#0d2233" stroke="#118ab2" stroke-width="2"/>
+      <text x="405" y="66" text-anchor="middle" fill="#118ab2" font-size="14">🏫</text>
+      <text x="405" y="88" text-anchor="middle" fill="#118ab2" font-size="10" font-weight="700">Trường</text>
+
+      <!-- 10km: Nhà An → Công viên -->
+      <line x1="70" y1="44" x2="233" y2="44" stroke="#ffd166" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <polygon points="233,40 242,44 233,48" fill="#ffd166"/>
+      <text x="151" y="38" text-anchor="middle" fill="#ffd166" font-size="11" font-weight="700">10 km</text>
+
+      <!-- 5km: Công viên → Trường -->
+      <line x1="263" y1="44" x2="390" y2="44" stroke="#06d6a0" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <polygon points="390,40 399,44 390,48" fill="#06d6a0"/>
+      <text x="326" y="38" text-anchor="middle" fill="#06d6a0" font-size="11" font-weight="700">5 km</text>
+
+      <!-- bracket kết quả: CV → Trường = 5km -->
+      <path d="M248 100 L248 112 L405 112 L405 100" stroke="#06d6a0" stroke-width="2" fill="none" stroke-linejoin="round"/>
+      <text x="326" y="128" text-anchor="middle" fill="#06d6a0" font-size="13" font-weight="800">Công viên → Trường = 5 km</text>
+    </svg>`;
+  }
+
+  function retryQuiz() {
+    resetQuiz();
+  }
+
+  function goMenu() {
+    showScreen('screen-menu');
+  }
+</script>
+</body>
+</html>
